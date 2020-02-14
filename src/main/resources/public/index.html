@@ -60,7 +60,7 @@
         var nums = $("#numbers").val()
         $.ajax({
             url: "sumatoria",
-            type: 'post',
+            type: 'get',
             data: { numbers: nums },
             success: function (e) { $("#resultadoh").show(); $("#resultadoh").text("La sumatoria es: "+e) },
             error: function (e) { alert("no funciono ):") }

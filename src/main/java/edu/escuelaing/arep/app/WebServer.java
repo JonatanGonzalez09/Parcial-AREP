@@ -4,6 +4,8 @@ import static spark.Spark.*;
 
 import java.util.ArrayList;
 
+import com.google.gson.Gson;
+
 import spark.QueryParamsMap;
 
 
@@ -23,17 +25,19 @@ public class WebServer {
                 lista.add(Float.parseFloat(nums[a]));
                 arreF[a] = Float.parseFloat(nums[a]);
             }
-            return app.listaOrdenada(arreF);
+            return new Gson().toJson(new StandardResponse(StatusResponse.SUCCESS, new Gson().toJsonTree(app.listaOrdenada(arreF).toString())));
         });
 
-        post("/sumatoria",(req, res) -> {
+        
+
+        get("/sumatoria",(req, res) -> {
             ArrayList <Float> lista = new ArrayList < Float > ();
             QueryParamsMap map = req.queryMap();
             String[] nums = map.get("numbers").value().split("\n"); 
             for (int a = 0; a < nums.length; a++) {
                 lista.add(Float.parseFloat(nums[a]));
             }
-            return app.getSum(lista);
+            return new Gson().toJson(new StandardResponse(StatusResponse.SUCCESS, new Gson().toJsonTree(app.getSum(lista))));
         });
     }
 
@@ -41,6 +45,6 @@ public class WebServer {
         if (System.getenv("PORT") != null) {
             return Integer.parseInt(System.getenv("PORT"));
         }
-        return 4567; //returns default port if heroku-port isn't set (i.e. on localhost)
- }
+        return 4567; 
+    }
 }
