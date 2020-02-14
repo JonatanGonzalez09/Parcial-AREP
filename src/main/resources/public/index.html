@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Parcial AREP 2020 </title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.js"
+    integrity="sha256-WpOohJOqMqqyKL9FccASB9O0KwACQJpFTUBLTYOVvVU=" crossorigin="anonymous"></script>
+    <!-- Compiled and minified JavaScript -->
+
+</head>
+
+<body>
+    <header>
+        <div id="content" class="center-align">
+            <h4>Calculo Lista Ordenada y Sumatoria </h4>
+            <div class="row">
+                <form class="col s12">
+                    <div class="row">
+                        <div class="input-field col l6 m6 s12 offset-l3 offset-m3">
+                            <textarea id="numbers" name ="numbers"
+                                class="materialize-textarea" placeholder="Después de cada número presione la tecla enter"></textarea>
+                            <label for="lista">Números</label>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="input-field col l6 m6 s12 offset-l3 offset-m3">
+                            <a class="waves-effect waves-light btn" id="listaOrdenada" >ListaOrdenada</a>
+                            <a class="waves-effect waves-light btn" id="sumatoria">Sumatoria</a>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+        <div id="resultado" class="center-align">
+            <h2 id="resultadoh"></h2>
+        </div>
+    </header>
+</body>
+
+<script type="text/javascript">
+  $('#listaOrdenada').click(function (e) {
+        e.preventDefault()
+        var nums = $("#numbers").val()
+        $.ajax({
+            url: "listaOrdenada",
+            type: 'post',
+            data: { numbers: nums },
+            success: function (e) { $("#resultadoh").show(); $("#resultadoh").text("La lista Ordenada es: "+e) },
+            error: function (e) { alert("no funciono ):") }
+        });
+    });
+
+    $('#sumatoria').click(function (e) {
+        e.preventDefault()
+        var nums = $("#numbers").val()
+        $.ajax({
+            url: "sumatoria",
+            type: 'post',
+            data: { numbers: nums },
+            success: function (e) { $("#resultadoh").show(); $("#resultadoh").text("La sumatoria es: "+e) },
+            error: function (e) { alert("no funciono ):") }
+        });
+    });
+</script>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js">
+</script>
+</html>

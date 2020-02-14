@@ -1,70 +1,46 @@
 package edu.escuelaing.arep.app;
 
+import static spark.Spark.*;
+
 import java.util.ArrayList;
 
-import static spark.Spark.port;
-import static spark.Spark.get;
-
-import spark.Request;
-import spark.Response;
-
+import spark.QueryParamsMap;
 
 
 public class WebServer {
-    static ArrayList < Float > lista = new ArrayList < Float > ();
-    static App app = new App();
-    static MergeSort mS = new MergeSort();
 
-    public static void main(String[] args){
-        WebServer ws = new WebServer();
-    }
-
-    public WebServer() {
-        System.out.println("Iniciando Server...");
+    public static void main(String[] args) {
+        App app = new App();
         port(getPort());
-        get("/numbers", (req, res) -> inputDataPage(req, res));
-        get("/results", (req, res) -> resultsPage(req, res));
-    }
+        staticFiles.location("/public");
 
-    private static String inputDataPage(Request req, Response res) {
-        String pageContent =
-            "<!DOCTYPE html>" +
-            "<html>" +
-            "<body>" +
-            "<h3>Ingrese los números de la lista separados por espacios:  </h3>" +
-            "<form action=\"/results\">" +
-            "  <input type=\"text\" name=\"num\" value=\"\">" +
-            "  <br>" +
-            "  <br> <br>" +
-            "  <input type=\"submit\" value=\"Enviar\">" +
-            "</form>" +
-            "<p>Al hacer click en el botón \"Enviar\",sus datos serán procesados y será redirigido a la página \"/results\".</p>" +
-            "</body>" +
-            "</html>";
-        return pageContent;
-    }
+        post("/listaOrdenada",(req, res) -> {
+            ArrayList <Float> lista = new ArrayList < Float > ();
+            QueryParamsMap map = req.queryMap();
+            String[] nums = req.queryParams("numbers").split("\n");
+            float[] arreF = new float[nums.length];
+            for (int a = 0; a < nums.length; a++) {
+                lista.add(Float.parseFloat(nums[a]));
+                arreF[a] = Float.parseFloat(nums[a]);
+            }
+            return app.listaOrdenada(arreF);
+        });
 
-    private static String resultsPage(Request req, Response res) {
-        String[] arre = req.queryParams("num").split("\\s+");
-        float[] arreF = new float[arre.length];
-        for (int a = 0; a < arre.length; a++) {
-            lista.add(Float.parseFloat(arre[a]));
-            arreF[a] = Float.parseFloat(arre[a]);
-        }
-
-        mS.sort(arreF, 0, arreF.length-1);
-
-        String result = "{\"lista recibida: \":" + "\"" + lista + "\"" 
-                        + ",\"La suma es: \":" + "\"" + app.getSum(lista) + "\"" 
-                        + ",\"La lista ordenada es: \":" + "\""+ app.listaOrdenada(arreF)+"}";
-        return result;
+        post("/sumatoria",(req, res) -> {
+            ArrayList <Float> lista = new ArrayList < Float > ();
+            QueryParamsMap map = req.queryMap();
+            String[] nums = map.get("numbers").value().split("\n"); 
+            for (int a = 0; a < nums.length; a++) {
+                lista.add(Float.parseFloat(nums[a]));
+            }
+            return app.getSum(lista);
+        });
     }
 
     static int getPort() {
         if (System.getenv("PORT") != null) {
             return Integer.parseInt(System.getenv("PORT"));
         }
-        return 35000;
-    }
-
+        return 4567; //returns default port if heroku-port isn't set (i.e. on localhost)
+ }
 }
